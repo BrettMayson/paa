@@ -1,7 +1,8 @@
 import init, { ImageResult } from './paa.js';
 
 async function run() {
-    let app = await init();
+    // Firefox linter has trouble with 'import', so import directly here
+    let app = await init(`${window.location.origin}/bg/paa_bg.wasm`);
 
     chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
         if (request.contentScriptQuery == "fetch_blob") {
