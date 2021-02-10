@@ -17,8 +17,8 @@ function pathChanged() {
 
     // Diff page
     let diffs = document.querySelectorAll("div[data-file-type='.paa'][class~='file']");
-    let interval = setInterval(function() {
-        for (diff of diffs) {
+    for (diff of diffs) {
+        let interval = setInterval(function(diff) {
             try {
                 let wrapper = diff.firstElementChild.nextElementSibling.firstElementChild;
                 wrapper.textContent = "Converting PAA...";
@@ -40,8 +40,8 @@ function pathChanged() {
                     wrapper.replaceWith(divimage);
                 });
             } catch {}
-        }
-    }, 10);
+        }, 10, diff);
+    }
 }
 
 pathChanged();
