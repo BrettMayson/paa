@@ -9,7 +9,7 @@ fn to_jpg_dxt1(b: &mut Criterion) {
         let mut file = std::fs::File::open("tests/dxt1.paa").unwrap();
         file.read_to_end(&mut v).unwrap();
         b.iter(|| {
-            let paa = paa::PAA::read(Cursor::new(v.clone())).unwrap();
+            let paa = paa::Paa::read(Cursor::new(v.clone())).unwrap();
             paa.maps[0].get_image();
         });
     });
@@ -21,7 +21,7 @@ fn to_jpg_dxt5(b: &mut Criterion) {
         let mut file = std::fs::File::open("tests/dxt5.paa").unwrap();
         file.read_to_end(&mut v).unwrap();
         b.iter(|| {
-            let paa = paa::PAA::read(Cursor::new(v.clone())).unwrap();
+            let paa = paa::Paa::read(Cursor::new(v.clone())).unwrap();
             paa.maps[0].get_image();
         });
     });

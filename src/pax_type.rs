@@ -1,5 +1,7 @@
 use std::io::Read;
 
+use texpresso::Format;
+
 #[derive(Debug, Clone)]
 pub enum PaXType {
     DXT1,
@@ -23,7 +25,7 @@ impl PaXType {
         }
     }
 
-    pub fn from_bytes(bytes: [u8; 2]) -> Option<Self> {
+    pub const fn from_bytes(bytes: [u8; 2]) -> Option<Self> {
         match bytes {
             [1, 255] => Some(Self::DXT1),    // 0x01FF
             [2, 255] => Some(Self::DXT2),    // 0x02FF
@@ -37,14 +39,39 @@ impl PaXType {
             _ => None,
         }
     }
+
+    pub const fn as_bytes(&self) -> [u8; 2] {
+        match self {
+            Self::DXT1 => [1, 255],
+            Self::DXT2 => [2, 255],
+            Self::DXT3 => [3, 255],
+            Self::DXT4 => [4, 255],
+            Self::DXT5 => [5, 255],
+            Self::RGBA4 => [68, 68],
+            Self::RGBA5 => [21, 85],
+            Self::RGBA8 => [136, 136],
+            Self::GRAYA => [128, 128],
+        }
+    }
 }
 
-impl Into<image::dxt::DXTVariant> for PaXType {
-    fn into(self) -> image::dxt::DXTVariant {
-        match self {
-            Self::DXT1 => image::dxt::DXTVariant::DXT1,
-            Self::DXT3 => image::dxt::DXTVariant::DXT3,
-            Self::DXT5 => image::dxt::DXTVariant::DXT5,
+impl From<PaXType> for Format {
+    fn from(pax: PaXType) -> Self {
+        match pax {
+            PaXType::DXT1 => Self::Bc1,
+            PaXType::DXT3 => Self::Bc2,
+            PaXType::DXT5 => Self::Bc3,
+            _ => unimplemented!(),
+        }
+    }
+}
+
+impl From<Format> for PaXType {
+    fn from(pax: Format) -> Self {
+        match pax {
+            Format::Bc1 => Self::DXT1,
+            Format::Bc2 => Self::DXT3,
+            Format::Bc3 => Self::DXT5,
             _ => unimplemented!(),
         }
     }
