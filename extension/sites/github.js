@@ -10,7 +10,7 @@ function pathChanged() {
                 fetch(window.location.href + "?raw=true")
                     .then(response => response.blob())
                     .then(blob => blob.arrayBuffer()).then(ab => {
-                        chrome.runtime.sendMessage({contentScriptQuery: "fetch_blob", ab: Array.apply(null,new Uint8Array(ab))}, response => {
+                        chrome.runtime.sendMessage({contentScriptQuery: "fetch_blob", ab: Array.from(new Uint8Array(ab))}, response => {
                             image.src = response;
                             wrapper.replaceWith(image);
                         });
