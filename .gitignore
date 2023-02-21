@@ -3,3 +3,4 @@ Cargo.lock
 pkg/
 *.pem
 *.crx
+web-ext-artifacts/
