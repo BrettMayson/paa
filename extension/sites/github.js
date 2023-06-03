@@ -3,18 +3,21 @@ function pathChanged() {
     if (window.location.pathname.endsWith(".paa")) {
         let interval = setInterval(function () {
             try {
-                let wrapper = document.getElementsByClassName("blob-wrapper")[0].firstChild.nextSibling.firstChild.nextSibling;
+                let wrapper = document.querySelector('section[aria-labelledby="file-name-id"] div a') || document.querySelector('div.blob-wrapper div a');
+                let previousImage = document.querySelector('section[aria-labelledby="file-name-id"] div img') || document.querySelector('div.blob-wrapper div img');
+                if (previousImage != null) { previousImage.remove() };
                 wrapper.textContent = "Converting PAA...";
                 clearInterval(interval);
                 let image = document.createElement("img");
                 fetch(window.location.href + "?raw=true")
                     .then(response => response.blob())
                     .then(blob => blob.arrayBuffer()).then(ab => {
-                        chrome.runtime.sendMessage({contentScriptQuery: "fetch_blob", ab: Array.from(new Uint8Array(ab))}, response => {
+                        chrome.runtime.sendMessage({ contentScriptQuery: "fetch_blob", ab: Array.from(new Uint8Array(ab)) }, response => {
                             image.src = response;
-                            wrapper.replaceWith(image);
+                            wrapper.textContent = "";
+                            wrapper.parentNode.insertBefore(image, wrapper.nextSibling);
                         });
-                });
+                    });
             } catch { }
         }, 50);
     }
@@ -47,7 +50,7 @@ function pathChanged() {
                     fetch(diff.querySelectorAll("a")[1].href + "?raw=true")
                         .then(response => response.blob())
                         .then(blob => blob.arrayBuffer()).then(ab => {
-                            chrome.runtime.sendMessage({contentScriptQuery: "fetch_blob", ab: Array.apply(null,new Uint8Array(ab))}, response => {
+                            chrome.runtime.sendMessage({ contentScriptQuery: "fetch_blob", ab: Array.apply(null, new Uint8Array(ab)) }, response => {
                                 image.src = response;
                                 wrapper.replaceWith(divimage);
                             });
